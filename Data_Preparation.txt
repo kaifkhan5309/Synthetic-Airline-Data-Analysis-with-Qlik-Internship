@@ -1,0 +1,43 @@
+SET ThousandSep=',';
+SET DecimalSep='.';
+SET MoneyThousandSep=',';
+SET MoneyDecimalSep='.';
+SET MoneyFormat='$ ###0.00;-$ ###0.00';
+SET TimeFormat='h:mm:ss TT';
+SET DateFormat='M/D/YYYY';
+SET TimestampFormat='M/D/YYYY h:mm:ss[.fff] TT';
+SET FirstWeekDay=6;
+SET BrokenWeeks=1;
+SET ReferenceDay=0;
+SET FirstMonthOfYear=1;
+SET CollationLocale='en-US';
+SET CreateSearchIndexOnReload=1;
+SET MonthNames='Jan;Feb;Mar;Apr;May;Jun;Jul;Aug;Sep;Oct;Nov;Dec';
+SET LongMonthNames='January;February;March;April;May;June;July;August;September;October;November;December';
+SET DayNames='Mon;Tue;Wed;Thu;Fri;Sat;Sun';
+SET LongDayNames='Monday;Tuesday;Wednesday;Thursday;Friday;Saturday;Sunday';
+SET NumericalAbbreviation='3:k;6:M;9:G;12:T;15:P;18:E;21:Z;24:Y;-3:m;-6:μ;-9:n;-12:p;-15:f;-18:a;-21:z;-24:y';
+
+
+[Airline_Dataset] : 
+
+Load *;
+
+[Airline_Dataset] : 
+NoConcatenate Load *,
+if(Age>=0 and Age <= 1,'Baby',
+if(Age>=1 and Age <= 3,'Todler',
+if(Age>=4 and Age <= 9,'Child',
+if(Age>=10 and Age <= 12,'Tween',
+if(Age>=13 and Age <= 19,'Teen',
+if(Age>=20 and Age <= 24,'Young Adult',
+if(Age>=25 and Age <= 39,'Adult',
+if(Age>=40 and Age <= 54,'Middle',
+if(Age>=55 and Age <= 79,'Elder',
+if(Age>=80, 'Just plain old')))))))))) AS AgeGroup,
+Date#([Departure Date],'MM/DD/YYYY') as [Departure_Date],
+Year([Departure Date]) AS Year,
+Month([Departure Date]) AS Month
+RESIDENT [Airline_Dataset]
+Where not([Arrival Airport] = '0' OR [Arrival Airport] = '-');
+
